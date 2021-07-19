@@ -24,17 +24,21 @@ public class NovaPropostaRequest {
     private BigDecimal salario;
     @Valid
     private EnderecoRequest enderecoRequest;
+    @NotBlank
+    private String nome;
 
     public NovaPropostaRequest(
             @Documento String documento,
-            @NotBlank @Email String email,
-            @NotNull @Positive BigDecimal salario,
-            EnderecoRequest enderecoRequest) {
+            String email,
+            BigDecimal salario,
+            EnderecoRequest enderecoRequest,
+            @NotBlank String nome) {
 
         this.documento = documento;
         this.email = email;
         this.salario = salario;
         this.enderecoRequest = enderecoRequest;
+        this.nome = nome;
     }
 
     public EnderecoRequest getEnderecoRequest() {
@@ -47,6 +51,6 @@ public class NovaPropostaRequest {
 
     public Proposta converter(){
         Endereco endereco = enderecoRequest.converter();
-        return new Proposta(this.documento, this.email, this.salario, endereco);
+        return new Proposta(this.documento, this.email, this.salario, endereco, this.nome);
     }
 }
