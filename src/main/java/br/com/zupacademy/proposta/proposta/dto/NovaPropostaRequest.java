@@ -41,8 +41,12 @@ public class NovaPropostaRequest {
         return enderecoRequest;
     }
 
+    public String getDocumento() {
+        return documento;
+    }
+
     public Proposta converter(){
         Endereco endereco = enderecoRequest.converter();
-        return new Proposta(this.documento, email, salario, endereco);
+        return new Proposta(this.documento, this.email, this.salario, endereco);
     }
 }
