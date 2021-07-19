@@ -29,9 +29,9 @@ public class NovaPropostaRequest {
 
     public NovaPropostaRequest(
             @Documento String documento,
-            String email,
-            BigDecimal salario,
-            EnderecoRequest enderecoRequest,
+            @NotBlank @Email String email,
+            @NotNull @Positive BigDecimal salario,
+            @Valid EnderecoRequest enderecoRequest,
             @NotBlank String nome) {
 
         this.documento = documento;
