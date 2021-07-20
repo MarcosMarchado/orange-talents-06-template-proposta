@@ -20,7 +20,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Documento {
 
-    String message() default "O documento não atende aos formatos válidos.";
+    String message() default "não atende aos formatos válidos.";
 
     Class<?>[] groups() default { };
 

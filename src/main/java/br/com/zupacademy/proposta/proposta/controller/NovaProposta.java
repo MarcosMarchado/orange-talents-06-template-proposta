@@ -3,9 +3,6 @@ package br.com.zupacademy.proposta.proposta.controller;
 import br.com.zupacademy.proposta.proposta.dto.NovaPropostaRequest;
 import br.com.zupacademy.proposta.proposta.modelo.Proposta;
 import br.com.zupacademy.proposta.proposta.repository.PropostaRepository;
-import br.com.zupacademy.proposta.requisicoes.solicitacao.ConsultaDadosDoSolicitante;
-import br.com.zupacademy.proposta.requisicoes.solicitacao.dto.ConsultaDadosRequest;
-import br.com.zupacademy.proposta.requisicoes.solicitacao.dto.ConsultaDadosResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +25,7 @@ public class NovaProposta {
     private PropostaRepository propostaRepository;
 
     @Autowired
-    private ConsultaDadosDoSolicitante consultaDadosDoSolicitante;
+    private VerificaStatus verificaStatus;
 
     @PostMapping
     @Transactional
@@ -45,8 +42,8 @@ public class NovaProposta {
                 .buildAndExpand(proposta.getId())
                 .toUri();
 
-        ConsultaDadosResponse solicitacao = consultaDadosDoSolicitante.consulta(new ConsultaDadosRequest(proposta));
-        proposta.setStatusDaProposta(solicitacao.getResultadoSolicitacao());
+        String status = verificaStatus.verifica(proposta);
+        proposta.setStatusDaProposta(status);
 
         return ResponseEntity.created(uri).build();
     }

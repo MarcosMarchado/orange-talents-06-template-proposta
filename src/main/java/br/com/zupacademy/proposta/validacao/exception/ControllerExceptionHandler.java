@@ -1,5 +1,6 @@
 package br.com.zupacademy.proposta.validacao.exception;
 
+import feign.RetryableException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -35,6 +36,14 @@ public class ControllerExceptionHandler {
         mensagens.add(exception.getReason());
         ErroPadrao erroPadrao = new ErroPadrao(mensagens);
         return ResponseEntity.status(exception.getStatus()).body(erroPadrao);
+    }
+
+    @ExceptionHandler(RetryableException.class)
+    public ResponseEntity<ErroPadrao> retryableException(RetryableException exception){
+        List<String> mensagens = new ArrayList<>();
+        mensagens.add("Falha ao consultar status do solicitante. Tente novamente mais tarde.");
+        ErroPadrao erroPadrao = new ErroPadrao(mensagens);
+        return ResponseEntity.internalServerError().body(erroPadrao);
     }
 
 }
