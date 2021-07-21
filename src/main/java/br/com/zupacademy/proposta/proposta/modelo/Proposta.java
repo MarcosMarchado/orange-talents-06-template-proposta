@@ -28,6 +28,9 @@ public class Proposta {
     @Enumerated(EnumType.STRING)
     private StatusDaProposta statusDaProposta;
 
+    @OneToOne(cascade = CascadeType.MERGE)
+    private Cartao cartao;
+
     @Deprecated
     public Proposta() {
     }
@@ -59,5 +62,9 @@ public class Proposta {
 
     public void setStatusDaProposta(String statusDaResposta) {
         this.statusDaProposta = StatusDaProposta.getStatus(statusDaResposta);
+    }
+
+    public void associaCartaoAProposta(Cartao cartao){
+        this.cartao = cartao;
     }
 }

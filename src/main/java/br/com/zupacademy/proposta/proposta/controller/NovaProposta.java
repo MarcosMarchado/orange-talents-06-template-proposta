@@ -32,11 +32,10 @@ public class NovaProposta {
     public ResponseEntity<?> criarProposta(@Valid @RequestBody NovaPropostaRequest novaPropostaRequest,
                                            UriComponentsBuilder uriComponentsBuilder){
 
-        String documento = novaPropostaRequest.getDocumento();
-        boolean possuiProposta = propostaRepository.findByDocumento(documento).isPresent();
+        Proposta proposta = novaPropostaRequest.converter();
+        boolean possuiProposta = propostaRepository.findByDocumento(proposta.getDocumento()).isPresent();
         if(possuiProposta) throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Solicitante já tem um proposta");
 
-        Proposta proposta = novaPropostaRequest.converter();
         propostaRepository.save(proposta);
         URI uri = uriComponentsBuilder.path("/propostas/{ id }")
                 .buildAndExpand(proposta.getId())
@@ -44,7 +43,7 @@ public class NovaProposta {
 
         String status = verificaStatus.verifica(proposta);
         proposta.setStatusDaProposta(status);
-
+        if(status.equals("COM_RESTRICAO")) return ResponseEntity.unprocessableEntity().build();
         return ResponseEntity.created(uri).build();
     }
 }
