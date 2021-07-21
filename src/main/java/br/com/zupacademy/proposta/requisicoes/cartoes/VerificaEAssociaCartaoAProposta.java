@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 
 import java.util.List;
 import java.util.Objects;
@@ -30,10 +31,11 @@ public class VerificaEAssociaCartaoAProposta {
             ConsultaSeCartaoFoiCriadoRequest request = new ConsultaSeCartaoFoiCriadoRequest(proposta);
             ResponseEntity<ConsultaSeCartaoFoiCriadoResponse> response = consultaSeCartaoFoiCriado.checaSeCartaoFoiCriado(request);
 
-            String numeroDoCartao = Objects.requireNonNull(response.getBody()).getId();
+            Cartao cartao = Objects.requireNonNull(response.getBody()).converter();
 
-            if(numeroDoCartao != null && response.getStatusCode().is2xxSuccessful()) {
-                proposta.associaCartaoAProposta(new Cartao(numeroDoCartao));
+            if(response.getStatusCode().is2xxSuccessful()) {
+                Assert.isTrue(cartao != null, "Cartão não pode estar nulo.");
+                proposta.associaCartaoAProposta(cartao);
                 propostaRepository.save(proposta);
             }
         });
