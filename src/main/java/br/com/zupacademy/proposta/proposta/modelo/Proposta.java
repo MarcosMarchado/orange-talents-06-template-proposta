@@ -56,6 +56,18 @@ public class Proposta {
         return nome;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public Endereco getEndereco() {
+        return endereco;
+    }
+
+    public StatusDaProposta getStatusDaProposta() {
+        return statusDaProposta;
+    }
+
     public String getDocumento() {
         return documento;
     }

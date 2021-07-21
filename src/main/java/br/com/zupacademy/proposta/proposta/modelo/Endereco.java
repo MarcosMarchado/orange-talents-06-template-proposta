@@ -37,4 +37,24 @@ public class Endereco {
         this.complemento = complemento;
         this.cidade = cidade;
     }
+
+    public String getLogradouro() {
+        return logradouro;
+    }
+
+    public String getBairro() {
+        return bairro;
+    }
+
+    public Integer getNumero() {
+        return numero;
+    }
+
+    public String getComplemento() {
+        return complemento;
+    }
+
+    public String getCidade() {
+        return cidade;
+    }
 }
