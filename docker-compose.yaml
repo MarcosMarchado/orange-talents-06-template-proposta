@@ -1,8 +1,45 @@
 version: '3'
 services:
 
+  proposta:
+    build:
+      dockerfile: ./Dockerfile
+      context: .
+    image: marcos/proposta
+    container_name: proposta
+    ports:
+      - 8081:8080
+    networks:
+      - proposta-network
+    environment:
+      MYSQL_DATABASE_URL: jdbc:mysql://db:3306/proposta?createDatabaseIfNotExist=true&userSSL=false&useTimezone=true&serverTimezone=UTC
+      MYSQL_USERNAME: root
+      MYSQL_PASSWORD: marcos123
+      API_ANALISE: http://analise:9999/api
+      API_CARTOES: http://contas:8888/api
+    depends_on:
+      - db
+      - analise
+      - contas
+
+  db:
+    image: mysql
+    container_name: db_proposta
+    restart: always
+    networks:
+      - proposta-network
+    ports:
+      - 3308:3306
+    environment:
+      MYSQL_DATABASE: proposta
+      MYSQL_ROOT_PASSWORD: marcos123
+    volumes:
+      - mysql-data:/var/lib/mysql
+
   zookeeper:
     image: "confluentinc/cp-zookeeper:5.2.1"
+    networks:
+      - proposta-network
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
@@ -12,6 +49,8 @@ services:
     image: "confluentinc/cp-kafka:5.2.1"
     ports:
       - 9092:9092
+    networks:
+      - proposta-network
     depends_on:
       - zookeeper
     environment:
@@ -28,6 +67,8 @@ services:
       - postgres-volume:/var/lib/postgresql/data
     ports:
       - 5432:5432
+    networks:
+      - proposta-network
     environment:
       POSTGRES_USER: keycloak
       POSTGRES_PASSWORD: password
@@ -40,6 +81,8 @@ services:
       - 18443:8443
       - 18080:8080
       - 19990:9990
+    networks:
+      - proposta-network
     depends_on:
       # Just a delay to wait for postgres! This is not recommended!
       - grafana
@@ -66,6 +109,8 @@ services:
     image: 'zupacademy/analise-financeira'
     ports:
       - 9999:9999
+    networks:
+      - proposta-network
     environment:
       SERVER_PORT: 9999
       LOG_LEVEL: INFO
@@ -76,6 +121,8 @@ services:
     image: 'zupacademy/contas'
     ports:
       - 8888:8888
+    networks:
+      - proposta-network
     environment:
       SERVER_PORT: 8888
       LOG_LEVEL: INFO
@@ -85,6 +132,8 @@ services:
     image: 'zupacademy/transacoes'
     ports:
       - 7777:7777
+    networks:
+      - proposta-network
     depends_on:
       - kafka
     environment:
@@ -104,6 +153,8 @@ services:
       - 14268:14268
       - 14250:14250
       - 9411:9411
+    networks:
+      - proposta-network
     environment:
       COLLECTOR_ZIPKIN_HTTP_PORT: 9411
 
@@ -129,12 +180,19 @@ services:
     image: vault:1.5.3
     ports:
       - 8200:8200
+    networks:
+      - proposta-network
     environment:
       VAULT_DEV_ROOT_TOKEN_ID: ee413645-dbe8-4848-afc6-6bb2768ada75
       VAULT_TOKEN: ee413645-dbe8-4848-afc6-6bb2768ada75
       VAULT_ADDR: http://127.0.0.1:8200
 
+networks:
+  proposta-network:
+    driver: bridge
+
 volumes:
+  mysql-data:
   grafana-volume:
   prometheus-volume:
   postgres-volume:
