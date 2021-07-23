@@ -17,6 +17,8 @@ services:
       MYSQL_PASSWORD: marcos123
       API_ANALISE: http://analise:9999/api
       API_CARTOES: http://contas:8888/api
+      KEYCLOAK_ISSUER_URI: http://keycloak:18080/auth/realms/proposta
+      KEYCLOAK_JWKS_URI: http://keycloak:18080/auth/realms/proposta/protocol/openid-connect/certs
     depends_on:
       - db
       - analise
