@@ -54,4 +54,11 @@ public class ControllerExceptionHandler {
         ErroPadrao erroPadrao = new ErroPadrao(mensagens);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(erroPadrao);
     }
+
+    @ExceptionHandler(BiometriaRepetidaException.class)
+    public ResponseEntity<ErroPadrao> biometriaRepetidaException(BiometriaRepetidaException exception){
+        List<String> mensagens = Arrays.asList(exception.getMessage());
+        ErroPadrao erroPadrao = new ErroPadrao(mensagens);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erroPadrao);
+    }
 }
