@@ -1,9 +1,13 @@
 package br.com.zupacademy.proposta.proposta.modelo;
 
 import br.com.zupacademy.proposta.validacao.exception.BiometriaRepetidaException;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -20,16 +24,19 @@ public class Cartao {
     @OneToMany(mappedBy = "cartao")
     private Set<Biometria> biometrias = new HashSet<>();
 
+    @OneToMany(mappedBy = "cartao", cascade = CascadeType.MERGE)
+    private List<Bloqueio> bloqueios = new ArrayList<>();
+
+    @Enumerated(EnumType.STRING)
+    private StatusCartao statusCartao;
+
     @Deprecated
     public Cartao() {
     }
 
     public Cartao(String numero) {
         this.numero = numero;
-    }
-
-    public Set<Biometria> getBiometrias() {
-        return biometrias;
+        this.statusCartao = StatusCartao.DESBLOQUEADO;
     }
 
     public void associaBiometriaAoCartao(Biometria biometria) {
@@ -40,7 +47,15 @@ public class Cartao {
         this.biometrias.add(biometria);
     }
 
-    public Long getId() {
-        return id;
+    public void associaBloqueioAoCartao(String userAgent, String ipRequest){
+        this.cartaoEstaBloqueado();
+        this.bloqueios.add(new Bloqueio(userAgent, ipRequest, this));
     }
+
+    //Se estiver bloqueado lançará um exceção
+    private void cartaoEstaBloqueado(){
+        if(statusCartao.equals(StatusCartao.BLOQUEADO))
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Cartão já está bloqueado");
+    }
+
 }
