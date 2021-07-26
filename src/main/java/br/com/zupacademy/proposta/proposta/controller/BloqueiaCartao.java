@@ -3,6 +3,7 @@ package br.com.zupacademy.proposta.proposta.controller;
 import br.com.zupacademy.proposta.proposta.modelo.Cartao;
 import br.com.zupacademy.proposta.proposta.repository.CartaoRepository;
 import br.com.zupacademy.proposta.requisicoes.cartoes.NotificaBloqueioDoCartao;
+import br.com.zupacademy.proposta.utilitarios.PegaIPRequisicao;
 import br.com.zupacademy.proposta.validacao.exception.ObjectNotFoundException;
 import feign.FeignException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,7 @@ public class BloqueiaCartao {
                                             HttpServletRequest request) {
 
         String userAgent = request.getHeader("User-Agent");
-        String ipRequest = getIpRequest(request);
+        String ipRequest = PegaIPRequisicao.getIpRequest(request);
 
         Cartao cartao = cartaoRepository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("Recurso não encontrado"));
@@ -51,14 +52,4 @@ public class BloqueiaCartao {
         }
     }
 
-    private String getIpRequest(HttpServletRequest request) {
-        String ipAddress = request.getHeader("x-forwarded-for");
-        if (ipAddress == null) {
-            ipAddress = request.getHeader("X_FORWARDED_FOR");
-            if (ipAddress == null){
-                ipAddress = request.getRemoteAddr();
-            }
-        }
-        return ipAddress;
-    }
 }
