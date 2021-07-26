@@ -50,6 +50,7 @@ public class Cartao {
     public void associaBloqueioAoCartao(String userAgent, String ipRequest){
         this.cartaoEstaBloqueado();
         this.bloqueios.add(new Bloqueio(userAgent, ipRequest, this));
+        this.statusCartao = StatusCartao.BLOQUEADO;
     }
 
     //Se estiver bloqueado lançará um exceção
@@ -58,4 +59,7 @@ public class Cartao {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Cartão já está bloqueado");
     }
 
+    public String getNumero() {
+        return numero;
+    }
 }
