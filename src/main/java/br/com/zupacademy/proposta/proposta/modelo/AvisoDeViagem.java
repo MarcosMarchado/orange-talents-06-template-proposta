@@ -40,4 +40,12 @@ public class AvisoDeViagem {
         this.ipRequest = ipRequest;
         this.cartao = cartao;
     }
+
+    public String getDestino() {
+        return destino;
+    }
+
+    public LocalDate getDataDoTermino() {
+        return dataDoTermino;
+    }
 }
