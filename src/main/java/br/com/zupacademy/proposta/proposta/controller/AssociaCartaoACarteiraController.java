@@ -34,13 +34,32 @@ public class AssociaCartaoACarteiraController {
                                                           UriComponentsBuilder uriComponentsBuilder,
                                                           @RequestBody @Valid AssociaCartaoAUmaCarteiraRequest associaCartaoAUmaCarteiraRequest){
 
-        Cartao cartao = cartaoRepository.findById(id)
-                .orElseThrow(() -> new ObjectNotFoundException("Recurso não encontrado"));
-        /*Faz a requisição via Feign usando o método associa*/
-        Carteira carteira = fazAssociacaoDoCartaoComCarteira.associa(cartao, associaCartaoAUmaCarteiraRequest, "paypal");
-        entityManager.persist(carteira);
-        URI uri = uriComponentsBuilder.path("/{id}/carteira-paypal/{id}").buildAndExpand(id, carteira.getId()).toUri();
+        Carteira carteira = associaEPersiste(id, "paypal", associaCartaoAUmaCarteiraRequest);
+        URI uri = uriComponentsBuilder.path("cartoes/{id}/carteira-paypal/{id}").buildAndExpand(id, carteira.getId()).toUri();
         return ResponseEntity.created(uri).build();
+    }
+
+    @Transactional
+    @PostMapping("/{id}/carteira-samsung-pay")
+    public ResponseEntity<?> associaCartaoACarteiraSamsungPay(@PathVariable Long id,
+                                                              UriComponentsBuilder uriComponentsBuilder,
+                                                              @RequestBody @Valid AssociaCartaoAUmaCarteiraRequest associaCartaoAUmaCarteiraRequest){
+
+        Carteira carteira = associaEPersiste(id, "samsung-pay", associaCartaoAUmaCarteiraRequest);
+        URI uri = uriComponentsBuilder.path("cartoes/{id}/samsung-pay/{id}").buildAndExpand(id, carteira.getId()).toUri();
+        return ResponseEntity.created(uri).build();
+    }
+
+    /*Associa o Cartão a Carteira através da Api de Cartões e faz a Persistencia da Carteira.*/
+    private Carteira associaEPersiste(Long id,
+                                      String nomeDaCarteira,
+                                      AssociaCartaoAUmaCarteiraRequest associaCartaoAUmaCarteiraRequest) {
+
+        Cartao cartao = cartaoRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException("Recurso não encontrado"));
+        /*Faz a requisição via Feign usando o método associa*/
+        Carteira carteira = fazAssociacaoDoCartaoComCarteira.associa(cartao, associaCartaoAUmaCarteiraRequest, nomeDaCarteira);
+        entityManager.persist(carteira);
+        return carteira;
     }
 
 
