@@ -45,7 +45,7 @@ public class ControllerExceptionHandler {
         List<String> mensagens = new ArrayList<>();
         mensagens.add("Falha ao consultar status do solicitante. Tente novamente mais tarde.");
         ErroPadrao erroPadrao = new ErroPadrao(mensagens);
-        return ResponseEntity.internalServerError().body(erroPadrao);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(erroPadrao);
     }
 
     @ExceptionHandler(ObjectNotFoundException.class)

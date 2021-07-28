@@ -24,7 +24,7 @@ public class VerificaEAssociaCartaoAProposta {
     private PropostaRepository propostaRepository;
 
     @Scheduled(fixedDelay = 120000)
-    private void executa(){
+    protected void executa(){
         List<Proposta> propostasElegiveis = propostaRepository.procuraPorPropostaElegivelSemCartao();
 
         propostasElegiveis.forEach(proposta -> {
