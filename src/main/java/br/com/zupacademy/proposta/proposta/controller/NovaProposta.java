@@ -33,7 +33,8 @@ public class NovaProposta {
                                            UriComponentsBuilder uriComponentsBuilder){
 
         Proposta proposta = novaPropostaRequest.converter();
-        boolean possuiProposta = propostaRepository.findByDocumento(proposta.getDocumento()).isPresent();
+        String documento = novaPropostaRequest.getDocumento(); /* <--Traz o documento encriptado*/
+        boolean possuiProposta = propostaRepository.findByDocumento(documento).isPresent();
         if(possuiProposta) throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Solicitante já tem um proposta");
 
         propostaRepository.save(proposta);

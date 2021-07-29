@@ -1,5 +1,7 @@
 package br.com.zupacademy.proposta.proposta.modelo;
 
+import br.com.zupacademy.proposta.utilitarios.EncryptaDocumentoDaProposta;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 
@@ -41,7 +43,7 @@ public class Proposta {
                     Endereco endereco,
                     String nome) {
 
-        this.documento = documento;
+        this.documento = EncryptaDocumentoDaProposta.encryptar(documento);
         this.email = email;
         this.salario = salario;
         this.endereco = endereco;
@@ -69,7 +71,7 @@ public class Proposta {
     }
 
     public String getDocumento() {
-        return documento;
+        return EncryptaDocumentoDaProposta.descriptografa(this.documento);
     }
 
     public void setStatusDaProposta(String statusDaResposta) {

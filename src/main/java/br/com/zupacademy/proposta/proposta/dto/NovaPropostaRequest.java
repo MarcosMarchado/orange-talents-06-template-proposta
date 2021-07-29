@@ -2,6 +2,7 @@ package br.com.zupacademy.proposta.proposta.dto;
 
 import br.com.zupacademy.proposta.proposta.modelo.Endereco;
 import br.com.zupacademy.proposta.proposta.modelo.Proposta;
+import br.com.zupacademy.proposta.utilitarios.EncryptaDocumentoDaProposta;
 import br.com.zupacademy.proposta.validacao.Documento;
 
 import javax.validation.Valid;
@@ -46,7 +47,7 @@ public class NovaPropostaRequest {
     }
 
     public String getDocumento() {
-        return documento;
+       return EncryptaDocumentoDaProposta.encryptar(documento);
     }
 
     public Proposta converter(){
