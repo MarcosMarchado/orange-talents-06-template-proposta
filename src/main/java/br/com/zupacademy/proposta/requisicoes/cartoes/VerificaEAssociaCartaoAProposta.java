@@ -3,7 +3,6 @@ package br.com.zupacademy.proposta.requisicoes.cartoes;
 import br.com.zupacademy.proposta.proposta.modelo.Cartao;
 import br.com.zupacademy.proposta.proposta.modelo.Proposta;
 import br.com.zupacademy.proposta.proposta.repository.PropostaRepository;
-import br.com.zupacademy.proposta.requisicoes.cartoes.dto.ConsultaSeCartaoFoiCriadoRequest;
 import br.com.zupacademy.proposta.requisicoes.cartoes.dto.ConsultaSeCartaoFoiCriadoResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -28,8 +27,7 @@ public class VerificaEAssociaCartaoAProposta {
         List<Proposta> propostasElegiveis = propostaRepository.procuraPorPropostaElegivelSemCartao();
 
         propostasElegiveis.forEach(proposta -> {
-            ConsultaSeCartaoFoiCriadoRequest request = new ConsultaSeCartaoFoiCriadoRequest(proposta);
-            ResponseEntity<ConsultaSeCartaoFoiCriadoResponse> response = consultaSeCartaoFoiCriado.checaSeCartaoFoiCriado(request);
+            ResponseEntity<ConsultaSeCartaoFoiCriadoResponse> response = consultaSeCartaoFoiCriado.checaSeCartaoFoiCriado(proposta.getId());
 
             Cartao cartao = Objects.requireNonNull(response.getBody()).converter();
 

@@ -18,7 +18,7 @@ public class ConfiguracaoSpringSecurity extends WebSecurityConfigurerAdapter {
                         .antMatchers(HttpMethod.GET, "/propostas/**").hasAuthority("SCOPE_usuario:read")
                         .antMatchers(HttpMethod.POST, "/propostas/**").hasAuthority("SCOPE_usuario:write")
                         .antMatchers(HttpMethod.POST, "/cartoes/**").hasAuthority("SCOPE_usuario:write")
-                        .antMatchers(HttpMethod.GET, "/actuator/**").hasAuthority("SCOPE_actuator:read"))
+                        .antMatchers(HttpMethod.GET, "/actuator/**").permitAll())
                 .cors()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
